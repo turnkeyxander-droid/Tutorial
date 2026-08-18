@@ -1,0 +1,51 @@
+.navbar__dropdown {
+    position: relative;
+}
+
+.navbar__dropdown--toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.navbar__dropdown--icon {
+    font-size: 11px;
+    transition: transform 0.15s ease;
+}
+
+.navbar__dropdown.active .navbar__dropdown--icon {
+    transform: rotate(180deg);
+}
+
+.navbar__dropdown--menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--login-card-bg);
+    border: 1px solid var(--login-border);
+    border-radius: 10px;
+    min-width: 180px;
+    padding: 8px;
+    margin-top: 8px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+}
+
+.navbar__dropdown.active .navbar__dropdown--menu {
+    display: block;
+}
+
+.navbar__dropdown--link {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 6px;
+    color: var(--login-text);
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.1s ease;
+}
+
+.navbar__dropdown--link:hover {
+    background: rgba(79, 140, 255, 0.1);
+}

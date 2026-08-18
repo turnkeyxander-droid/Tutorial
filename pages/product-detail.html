@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail - NEXT</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/product-detail.css">
+    <link rel="stylesheet" href="/css/productToggle.css">
+    <script src="https://kit.fontawesome.com/1353181530.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <div class="detail__container">
+        
+        <div class="detail__wrapper">
+
+            <div class="detail__left">
+                <a href="/pages/product.html" class="back__btn">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </a>
+                <div class="detail__img--container">
+                    <img src="/images/pic1.svg" alt="Product" id="detailImg">
+                </div>
+            </div>
+
+            <div class="detail__right">
+                <div class="empty_place"></div>
+                <div class="detail__info">
+                    <p class="detail__category" id="detailCategory"></p>
+                    <h1 class="detail__name" id="detailName"></h1>
+                    <p class="detail__price" id="detailPrice"></p>
+                    <p class="detail__description" id="detailDescription"></p>
+
+                    <!-- Quantity Selector -->
+                    <div class="detail__option">
+                        <label>Quantity</label>
+                        <div class="quantity__control">
+                            <button type="button" id="qtyMinus">&minus;</button>
+                            <input type="number" id="quantityInput" value="1" min="1" max="10">
+                            <button type="button" id="qtyPlus">&plus;</button>
+                        </div>
+                        <p class="stock__note" id="stockNote"></p>
+                    </div>
+
+                    <button class="add__to--cart" id="addToCartBtn">Add to Cart</button>
+                </div>
+            </div>
+        
+
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+
+    <script src="/js/layout.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/product-detail.js"></script>
+</body>
+</html>
