@@ -21,7 +21,7 @@ function hidePageLoading() {
 document.addEventListener("click", (e) => {
     const link = e.target.closest("a");
 
-    if (!link) return; // 点的不是连结，不处理
+    if (!link) return; // Clicked on something that's not a link, don't process
 
     const href = link.getAttribute("href");
 

@@ -19,25 +19,26 @@
             <button class="add__btn" id="addProductBtn">+ Add Product</button>
         </div>
 
-        <div class="manage__table--wrapper">
-            <table class="manage__table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Product ID</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="productTableBody">
-                    
-                </tbody>
-            </table>
+        <div class="manage__table--container">
+            <div class="manage__table--header">
+                <div class="header__cell">ID</div>
+                <div class="header__cell">Image</div>
+                <div class="header__cell">Name</div>
+                <div class="header__cell">Description</div>
+                <div class="header__cell">Product ID</div>
+                <div class="header__cell">Category</div>
+                <div class="header__cell">Price</div>
+                <div class="header__cell">Quantity</div>
+                <div class="header__cell">Action</div>
+            </div>
+
+            <div class="manage__table--wrapper">
+                <table class="manage__table">
+                    <tbody id="productTableBody">
+                        <!-- Product rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -80,7 +81,10 @@
 
                 <div class="modal__field">
                     <label for="productCategory">Category</label>
-                    <input type="text" id="productCategory" required>
+                    <select id="productCategory" required>
+                        <option value="">Select a category</option>
+                        <!-- Category options will be populated by JavaScript -->
+                    </select>
                 </div>
 
                 <div class="modal__field">

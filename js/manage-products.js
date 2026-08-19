@@ -23,7 +23,7 @@ async function loadProductTable() {
                     <td>${product.name}</td>
                     <td>${product.description}</td>
                     <td>${product.product_code}</td>
-                    <td>${product.category}</td>
+                    <td>${product.category_name}</td>
                     <td>RM${product.price}</td>
                     <td>${product.quantity}</td>
                     <td class="manage__actions">
@@ -40,6 +40,27 @@ async function loadProductTable() {
     }
 }
 
+async function loadCategoryOptions(selectedId = null) {
+    const res = await fetch("/api/categories");
+    const categories = await res.json();
+
+    const select = document.getElementById("productCategory");
+    select.innerHTML = '<option value="">Select a category</option>';
+
+    categories.forEach(category => {
+        const option = document.createElement("option");
+        option.value = category.id;
+        option.textContent = category.name;
+
+        // If in edit mode and a selectedId is provided and matches the category id, mark it as selected
+        if (selectedId && category.id === selectedId) {
+            option.selected = true;
+        }
+
+        select.appendChild(option);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", loadProductTable);
 
 //open Add modal
@@ -49,6 +70,8 @@ document.getElementById("addProductBtn").addEventListener("click", () => {
 
     // preview = none
     document.getElementById("imagePreview").style.display = "none"
+
+    loadCategoryOptions(); // Load categories when opening the modal
 
     productModalTitle.textContent = "Add Product";
     productSubmitBtn.textContent = "Add Product";
@@ -76,7 +99,7 @@ productForm.addEventListener("submit", async (e) => {
     formData.append("name", document.getElementById("productName").value);
     formData.append("description", document.getElementById("detailDescription").value);
     formData.append("productCode", document.getElementById("productCode").value);
-    formData.append("category", document.getElementById("productCategory").value);
+    formData.append("categoryId", document.getElementById("productCategory").value);
     formData.append("price", document.getElementById("productPrice").value);
     formData.append("quantity", document.getElementById("productQuantity").value);
 
@@ -116,9 +139,10 @@ productTableBody.addEventListener("click", async (e) => {
             document.getElementById("productName").value = product.name;
             document.getElementById("detailDescription").value = product.description;
             document.getElementById("productCode").value = product.product_code;
-            document.getElementById("productCategory").value = product.category;
             document.getElementById("productPrice").value = product.price;
             document.getElementById("productQuantity").value = product.quantity;
+
+            await loadCategoryOptions(product.category_id); // Load categories and set the selected one
 
             document.getElementById("productImage").value = "";
             const preview = document.getElementById("imagePreview");

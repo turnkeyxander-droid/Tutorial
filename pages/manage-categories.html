@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Categories - NEXT</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/categories.css">
+    <link rel="stylesheet" href="/css/productToggle.css">
+    <script src="https://kit.fontawesome.com/1353181530.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <div class="products__manage">
+        <div class="manage__header">
+            <h2 class="section__title">Manage Categories</h2>
+            <button class="add__btn" id="addCategoryBtn">+ Add Category</button>
+        </div>
+
+        <div class="manage__table--container">
+            <div class="manage__table--header">
+                <div class="header__cell">ID</div>
+                <div class="header__cell">Name</div>
+                <div class="header__cell">Action</div>
+            </div>
+
+            <div class="manage__table--wrapper">
+                <table class="manage__table">
+                    <tbody id="categoryTableBody">
+                        <!-- Category rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Category Modal -->
+    <div class="modal__overlay" id="categoryOverlay">
+        <div class="modal" id="categoryModal">
+            <button class="modal__close" id="categoryClose" aria-label="Close">&times;</button>
+
+            <h2 class="modal__title" id="categoryModalTitle">Add Category</h2>
+
+            <form id="categoryForm" class="modal__form">
+                <input type="hidden" id="categoryDbId">
+
+                <div class="modal__field">
+                    <label for="categoryName">Category Name</label>
+                    <input type="text" id="categoryName" required>
+                </div>
+
+                <button type="submit" class="modal__save-btn" id="categorySubmitBtn">Add Category</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+
+    <script src="/js/admin-guard.js"></script>
+    <script src="/js/page-transition.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/manage-categories.js"></script>
+</body>
+</html>

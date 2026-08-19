@@ -1011,6 +1011,20 @@ body {
     border-color: var(--modal-accent);
 }
 
+.modal__field select {
+    background: var(--modal-input-bg);
+    border: 1px solid var(--modal-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--modal-text);
+    font-size: 14px;
+}
+
+.modal__field select:focus {
+    outline: none;
+    border-color: var(--modal-accent);
+}
+
 .modal__save-btn {
     background: var(--modal-accent);
     border: none;

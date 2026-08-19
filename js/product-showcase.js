@@ -15,7 +15,7 @@ async function loadProducts() {
                         <img src="${imageSrc}" alt="${product.name}">
                     </div>
                     <h3 class="product__name">${product.name}</h3>
-                    <p class="product__category">${product.category}</p>
+                    <p class="product__category">${product.category_name}</p>
                     <p class="product__price">RM${product.price}</p>
                 </div>
             </a>

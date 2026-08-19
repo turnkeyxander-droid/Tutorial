@@ -303,7 +303,12 @@ app.put("/api/profile/password", async (req, res) => {
 // 1. Catch all the product
 app.get("/api/products", async (req, res) => {
     try{
-        const[products] = await pool.query("SELECT * FROM products ORDER BY id");
+        const[products] = await pool.query(
+            `SELECT products.*, categories.name AS category_name 
+            FROM products
+            LEFT JOIN categories ON products.category_id = categories.id 
+            ORDER BY products.id`
+        );
         res.json(products);
     }catch (err) {
         console.error(err);
@@ -316,8 +321,14 @@ app.get("/api/products/:id", async (req, res) => {
     try{
         const {id} = req.params;
 
-        const [products] = await pool.query("SELECT * FROM products WHERE id = ?", [id])
-        
+        const [products] = await pool.query(
+            `SELECT products.*, categories.name AS category_name 
+            FROM products
+            LEFT JOIN categories ON products.category_id = categories.id 
+            WHERE products.id = ?`,
+            [id]
+        );
+
         if (products.length === 0) {
             return res.status(404).json({ message: "Product not found" });
         }
@@ -332,16 +343,16 @@ app.get("/api/products/:id", async (req, res) => {
 // 3. Add product
 app.post("/api/products", requireAdmin, upload.single("image"), async (req, res) => {
     try{
-        const { name, description, productCode, category, price, quantity } = req.body;
+        const { name, description, productCode, categoryId, price, quantity } = req.body;
         const imagePath = req.file ? `/uploads/products/${req.file.filename}`:null;
 
-        if (!name || !description || !productCode || !category || !price || !quantity) {
+        if (!name || !description || !productCode || !categoryId || !price || !quantity) {
             return res.status(400).json({ message: "Please fill in all the blanks"});
         }
 
         await pool.query(
-            "INSERT INTO products (name, description, product_code, category, price, quantity, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [name, description, productCode, category, price, quantity, imagePath]
+            "INSERT INTO products (name, description, product_code, category_id, price, quantity, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [name, description, productCode, categoryId, price, quantity, imagePath]
         );
 
         res.status(201).json({ message: "Product added successfully" });
@@ -356,9 +367,9 @@ app.post("/api/products", requireAdmin, upload.single("image"), async (req, res)
 app.put("/api/products/:id", requireAdmin, upload.single("image"), async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, productCode, category, price, quantity } = req.body;
+        const { name, description, productCode, categoryId, price, quantity } = req.body;
 
-        if (!name || !description || !productCode || !category || !price || !quantity) {
+        if (!name || !description || !productCode || !categoryId || !price || !quantity) {
             return res.status(400).json({ message: "Please fill in all the blanks" });
         }
 
@@ -366,13 +377,13 @@ app.put("/api/products/:id", requireAdmin, upload.single("image"), async (req, r
             const imagePath = `/uploads/products/${req.file.filename}`;
 
             await pool.query(
-                "UPDATE products SET name = ?, description = ?, product_code = ?, category = ?, price = ?, quantity = ?, image_path = ? WHERE id = ?",
-                [name, description, productCode, category, price, quantity, imagePath, id]
+                "UPDATE products SET name = ?, description = ?, product_code = ?, category_id = ?, price = ?, quantity = ?, image_path = ? WHERE id = ?",
+                [name, description, productCode, categoryId, price, quantity, imagePath, id]
             );
         } else {
             await pool.query(
-                "UPDATE products SET name = ?, description = ?, product_code = ?, category = ?, price = ?, quantity = ? WHERE id = ?",
-                [name, description, productCode, category, price, quantity, id]
+                "UPDATE products SET name = ?, description = ?, product_code = ?, category_id = ?, price = ?, quantity = ? WHERE id = ?",
+                [name, description, productCode, categoryId, price, quantity, id]
             );
         }
 
@@ -493,6 +504,72 @@ app.delete("/api/cart/:id", async (req, res) => {
     
 });
 
+
+// Category api
+// 1. Catch all the category
+app.get("/api/categories", async (req, res) => {
+    try{
+        const[categories] = await pool.query("SELECT * FROM categories ORDER BY id");
+        res.json(categories);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error, please try later" });
+    }
+});
+
+// 2. Add category
+app.post("/api/categories", requireAdmin, async (req, res) => {
+    try{
+        const { name } = req.body;
+
+        if (!name) {
+            return res.status(400).json({ message: "Please fill in the blank"});
+        }
+
+        const [existing] = await pool.query("SELECT id FROM categories WHERE name = ?", [name]);
+
+        if (existing.length > 0) {
+            return res.status(409).json({ message: "Category already exists" });
+        }
+
+        await pool.query("INSERT INTO categories (name) VALUES (?)", [name]);
+        res.status(201).json({ message: "Category added" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error, please try later" });
+    }
+});
+
+// 3. Update category
+app.put("/api/categories/:id", requireAdmin, async (req, res) => {
+    try{
+        const { id } = req.params;
+        const { name } = req.body;
+
+        if (!name) {
+            return res.status(400).json({ message: "Please fill in the blank"});
+        }
+
+        await pool.query("UPDATE categories SET name = ? WHERE id = ?", [name, id]);
+        res.json({ message: "Category updated" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error, please try later" });
+    }
+});
+
+// 4. Delete category
+app.delete("/api/categories/:id", requireAdmin, async (req, res) => {
+    try{
+        const { id } = req.params;
+
+        await pool.query("DELETE FROM categories WHERE id = ?", [id]);
+        res.json({ message: "Category deleted" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error, please try later" });
+    }
+});
 
 //Start server
 app.listen(PORT, () => {

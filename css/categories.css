@@ -15,70 +15,7 @@
     text-align: center;
 }
 
-.products__grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.product__card {
-    background: var(--login-card-bg);
-    border: 1px solid var(--login-border);
-    border-radius: 14px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.15s ease, border-color 0.15s ease;
-}
-
-.product__card:hover {
-    transform: translateY(-4px);
-    border-color: var(--login-accent);
-}
-
-.product__card--link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
-
-.product__img--container {
-    background: var(--login-input-bg);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 140px;
-}
-
-.product__img--container img {
-    max-height: 100%;
-    max-width: 100%;
-}
-
-.product__card h3 {
-    color: var(--login-text);
-    font-size: 16px;
-    margin: 0 0 6px;
-}
-
-.product__category {
-    color: var(--login-text-muted);
-    font-size: 13px;
-    margin: 0 0 8px;
-}
-
-.product__price {
-    color: var(--login-accent);
-    font-size: 18px;
-    font-weight: 700;
-    margin: 0;
-}
-
-/* ===== Section B: Product Management ===== */
+/* ===== Section B: Category Management ===== */
 
 .products__manage {
     width: 100%;
@@ -88,7 +25,7 @@
 }
 
 .manage__header {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto 24px;
     display: flex;
     align-items: center;
@@ -118,7 +55,7 @@
 
 /* 表格外层：装表头 + 捲动容器 */
 .manage__table--container {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     background: var(--login-card-bg);
     border: 1px solid var(--login-border);
@@ -129,7 +66,7 @@
 /* 表头：固定在最上面，不放进捲动容器里 */
 .manage__table--header {
     display: grid;
-    grid-template-columns: 60px 70px 1fr 1.5fr 110px 100px 100px 90px 160px;
+    grid-template-columns: 80px 1fr 160px;
     background: var(--login-card-bg);
     border-bottom: 1px solid var(--login-border);
     padding: 14px 18px;
@@ -161,7 +98,7 @@
 
 .manage__table tr {
     display: grid;
-    grid-template-columns: 60px 70px 1fr 1.5fr 110px 100px 100px 90px 160px;
+    grid-template-columns: 80px 1fr 160px;
     align-items: center;
     padding: 0 18px;
 }
@@ -240,17 +177,4 @@
 .manage__table--wrapper {
     scrollbar-width: thin;
     scrollbar-color: var(--login-border) var(--login-input-bg);
-}
-
-/* Responsive: fewer columns on smaller screens */
-@media (max-width: 992px) {
-    .products__grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 576px) {
-    .products__grid {
-        grid-template-columns: 1fr;
-    }
 }

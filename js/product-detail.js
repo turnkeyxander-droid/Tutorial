@@ -64,7 +64,7 @@ async function loadProductDetail() {
 
         document.getElementById("detailName").textContent = product.name;
         document.getElementById("detailDescription").textContent = product.description;
-        document.getElementById("detailCategory").textContent = product.category;
+        document.getElementById("detailCategory").textContent = product.category_name;
         document.getElementById("detailPrice").textContent = `RM${product.price}`;
         document.getElementById("stockNote").textContent = `${product.quantity} in stock`;
         document.getElementById("detailImg").src = product.image_path ? product.image_path : "/images/pic1.svg";
