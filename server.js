@@ -56,6 +56,16 @@ app.use(express.static(path.join(__dirname, "pages")));
 // Let image acccept by browser, so that the image can display
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+function requireAdmin(req, res, next) {
+    if(!req.session.userId) {
+        return res.status(401).json({ message: "Please log in first" });
+    }
+    if(req.session.role !== "admin") {
+        return res.status(403).json({ message: "Access denied. Admin only." });
+    }
+    next();
+}
+
 // Set up api
 app.get("/api/test", (req, res) => {
     res.json({
@@ -106,7 +116,7 @@ app.post("/api/login", async (req, res) => {
 
         // 1. Look up the user by email — fetch the hashed password too
         const [users] = await pool.query(
-            "SELECT id, username, password FROM users WHERE email = ?",
+            "SELECT id, username, password, role FROM users WHERE email = ?",
             [email]
         );
 
@@ -126,13 +136,14 @@ app.post("/api/login", async (req, res) => {
 
         req.session.userId = user.id;
         req.session.username = user.username;
+        req.session.role = user.role;
 
         await pool.query(
             "INSERT INTO sessions (session_id, user_id) VALUES (?, ?)",
             [req.sessionID, user.id]
         );
 
-        res.status(200).json({ message: "Logib successful", username: user.username})
+        res.status(200).json({ message: "Login successful", username: user.username, role: user.role });
 
     } catch (err) {
         console.error(err);
@@ -142,7 +153,7 @@ app.post("/api/login", async (req, res) => {
 
 app.get("/api/me", (req, res) => {
     if (req.session.userId) {
-        res.json({ loggedIn: true, username: req.session.username });
+        res.json({ loggedIn: true, username: req.session.username, role: req.session.role });
     } else {
         res.json({ loggedIn: false });
     }
@@ -319,7 +330,7 @@ app.get("/api/products/:id", async (req, res) => {
 });
 
 // 3. Add product
-app.post("/api/products", upload.single("image"), async (req, res) => {
+app.post("/api/products", requireAdmin, upload.single("image"), async (req, res) => {
     try{
         const { name, description, productCode, category, price, quantity } = req.body;
         const imagePath = req.file ? `/uploads/products/${req.file.filename}`:null;
@@ -342,7 +353,7 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
 });
 
 // 4. update product
-app.put("/api/products/:id", upload.single("image"), async (req, res) => {
+app.put("/api/products/:id", requireAdmin, upload.single("image"), async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description, productCode, category, price, quantity } = req.body;
@@ -374,7 +385,7 @@ app.put("/api/products/:id", upload.single("image"), async (req, res) => {
 });
 
 // 5. Delete product
-app.delete("/api/products/:id", async (req, res) => {
+app.delete("/api/products/:id", requireAdmin, async (req, res) => {
     try {
         const { id } = req.params;
 

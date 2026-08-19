@@ -2,12 +2,6 @@ async function loadCart() {
     try {
         const res = await fetch("/api/cart");
 
-        if (res.status === 401) {
-            alert("Please log in first");
-            window.location.href = "/pages/login.html";
-            return;
-        }
-
         const items = await res.json();
 
         const cartItemsDiv = document.getElementById("cartItems");

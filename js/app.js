@@ -90,6 +90,13 @@ document.addEventListener("partials:loaded", async () => {
         loginBtn.innerHTML = `<a href="#" class="button" id="logoutBtn">Logout (${data.username})</a>`;
         profileBtn.innerHTML = `<a href="#" class="navbar__links" id="profileLink">Profile</a>`;
 
+        if (data.role === "admin") {
+            const manageLink = document.querySelector('a[href="/pages/manage-products.html"]');
+            if (manageLink) {
+                manageLink.style.display = "block";
+            }
+        }
+
         document.getElementById("logoutBtn").addEventListener("click", async (e) => {
             e.preventDefault();
             await fetch("/api/logout", { method: "POST" });
