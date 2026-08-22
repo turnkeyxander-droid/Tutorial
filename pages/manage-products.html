@@ -16,6 +16,10 @@
     <div class="products__manage">
         <div class="manage__header">
             <h2 class="section__title">Manage Products</h2>
+            <div class="search__wrapper">
+                <i class="fa-solid fa-magnifying-glass search__icon"></i>
+                <input type="text" id="productSearch" class="search__input" placeholder="Search by name">
+            </div>
             <button class="add__btn" id="addProductBtn">+ Add Product</button>
         </div>
 
@@ -100,6 +104,12 @@
                 <button type="submit" class="modal__save-btn" id="productSubmitBtn">Add Product</button>
             </form>
         </div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div class="lightbox__overlay" id="imageLightbox">
+        <button class="lightbox__close" id="lightboxClose" aria-label="Close">&times;</button>
+        <img id="lightboxImg" class="lightbox__img" alt="Product full view">
     </div>
 
     <div id="footer-container"></div>

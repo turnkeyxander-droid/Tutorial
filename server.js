@@ -1,8 +1,12 @@
+// Load environment variables from .env file
+require("dotenv").config();
+
 // Set up Express
 const express = require("express");
 const path = require("path");
 
 const bcrypt = require("bcrypt");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // MySQL connection (Node.js → MySQL connection)
 const mysql = require("mysql2/promise");
@@ -71,6 +75,10 @@ app.get("/api/test", (req, res) => {
     res.json({
         message: "API is working!"
     });
+});
+
+app.get("/api/stripe-key", (req, res) => {
+    res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
 });
 
 // Login & Signup api
@@ -571,8 +579,167 @@ app.delete("/api/categories/:id", requireAdmin, async (req, res) => {
     }
 });
 
+
+// Payment api (building the payment intent)
+app.post("/api/create-payment-intent", async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ message: "Please log in first" });
+    }
+
+    try {
+        const { amount } = req.body;
+
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: amount * 100, // Convert to cents
+            currency: "myr"
+        });
+
+        res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error, please try later" });
+    }
+});
+
+app.post("/api/checkout", async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ message: "Please log in first" });
+    }
+
+    const connection = await pool.getConnection();
+
+    try {
+        const { address, paymentIntentId } = req.body;
+
+        if (!address || !paymentIntentId) {
+            return res.status(400).json({ message: "Missing address or payment info" });
+        }
+
+        // 1. 跟 Stripe 确认这笔付款真的成功了，不能只信任前端说"成功"
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+        if (paymentIntent.status !== "succeeded") {
+            return res.status(400).json({ message: "Payment not completed" });
+        }
+
+        // 2. 抓出这个使用者购物车里的东西
+        const [cartItems] = await connection.query(
+            `SELECT cart_items.quantity, products.id AS product_id, products.name, products.price, products.quantity AS stock
+             FROM cart_items
+             JOIN products ON cart_items.product_id = products.id
+             WHERE cart_items.user_id = ?`,
+            [req.session.userId]
+        );
+
+        if (cartItems.length === 0) {
+            return res.status(400).json({ message: "Cart is empty" });
+        }
+
+        // 3. 开始一笔"交易"（transaction）——要嘛全部成功，要嘛全部失败
+        await connection.beginTransaction();
+
+        const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        // 建立订单主记录
+        const [orderResult] = await connection.query(
+            "INSERT INTO orders (user_id, total_amount, status, shipping_address) VALUES (?, ?, ?, ?)",
+            [req.session.userId, totalAmount, "paid", address]
+        );
+
+        const orderId = orderResult.insertId;
+
+        // 逐一处理购物车里的每一项
+        for (const item of cartItems) {
+            // 建立订单明细（复制一份name/price快照）
+            await connection.query(
+                "INSERT INTO order_items (order_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)",
+                [orderId, item.product_id, item.name, item.price, item.quantity]
+            );
+
+            // 扣减库存
+            await connection.query(
+                "UPDATE products SET quantity = quantity - ? WHERE id = ?",
+                [item.quantity, item.product_id]
+            );
+        }
+
+        // 清空这个使用者的购物车
+        await connection.query("DELETE FROM cart_items WHERE user_id = ?", [req.session.userId]);
+
+        // 4. 全部都成功了，才真正提交这笔交易
+        await connection.commit();
+
+        res.status(201).json({ message: "Order placed successfully", orderId });
+
+    } catch (err) {
+        await connection.rollback(); // 任何一步失败，全部撤销
+        console.error(err);
+        res.status(500).json({ message: "Checkout failed, please try again" });
+    } finally {
+        connection.release();
+    }
+});
+
+
+// order api
+// 1. Catch all the order
+app.get("/api/orders", async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ message: "Please log in first" });
+    }
+
+    const connection = await pool.getConnection();
+
+    try {
+        const [orders] = await connection.query(
+            "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC",
+            [req.session.userId]
+        );
+
+        res.json(orders);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error, please try later" });
+    } finally {
+        connection.release();
+    }
+});
+
+// 2. catch a single order
+app.get("/api/orders/:id", async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ message: "Please log in first" });
+    }
+
+    try {
+        const { id } = req.params;
+
+        // makes sure this order belongs to the current user
+        const [orders] = await pool.query(
+            "SELECT * FROM orders WHERE id = ? AND user_id = ?",
+            [id, req.session.userId]
+        );
+
+        if (orders.length === 0) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        const [items] = await pool.query(
+            "SELECT * FROM order_items WHERE order_id = ?",
+            [id]
+        );
+
+        res.json({ order: orders[0], items: items });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error, please try later" });
+    }
+});
+
 //Start server
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
+
 

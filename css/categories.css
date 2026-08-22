@@ -178,3 +178,39 @@
     scrollbar-width: thin;
     scrollbar-color: var(--login-border) var(--login-input-bg);
 }
+
+.search__wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 320px;
+    margin: 0 20px;
+}
+
+.search__icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--login-text-muted);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.search__input {
+    width: 100%;
+    background: var(--login-input-bg);
+    border: 1px solid var(--login-border);
+    border-radius: 8px;
+    padding: 10px 14px 10px 38px;
+    color: var(--login-text);
+    font-size: 14px;
+}
+
+.search__input:focus {
+    outline: none;
+    border-color: var(--login-accent);
+}
+
+.search__input::placeholder {
+    color: var(--login-text-muted);
+}

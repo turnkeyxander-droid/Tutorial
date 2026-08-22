@@ -94,3 +94,30 @@
 .cart__total span {
     color: var(--login-accent);
 }
+
+.cart__checkout-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: var(--login-accent);
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 16px;
+    transition: filter 0.15s ease;
+}
+
+.cart__checkout-btn:hover {
+    filter: brightness(1.1);
+}
+
+.cart__checkout-btn.disabled {
+    background: var(--login-border);
+    color: var(--login-text-muted);
+    pointer-events: none;
+    cursor: not-allowed;
+}

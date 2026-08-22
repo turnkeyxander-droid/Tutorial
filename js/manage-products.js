@@ -4,12 +4,73 @@ const productForm = document.getElementById("productForm");
 const productModalTitle = document.getElementById("productModalTitle");
 const productSubmitBtn = document.getElementById("productSubmitBtn");
 const productTableBody = document.getElementById("productTableBody");
+const imageLightbox = document.getElementById("imageLightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+const lightboxClose = document.getElementById("lightboxClose");
+
+let allProducts = []; // save all products for searching
+
+// Exist checking
+const productImageInput = document.getElementById("productImage");
+
+if (productImageInput) {
+    productImageInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        const preview = document.getElementById("imagePreview");
+
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+        }
+    });
+}
+
+lightboxClose.addEventListener("click", () => {
+    imageLightbox.classList.remove("active");
+});
+
+imageLightbox.addEventListener("click", (e) => {
+    if (e.target === imageLightbox) {
+        imageLightbox.classList.remove("active");
+    }
+});
+
+// product table rendering function
+function renderProductTable(products) {
+    productTableBody.innerHTML = "";
+
+    products.forEach(product => {
+        const rowHTML = `
+            <tr>
+                <td>${product.id}</td>
+                <td>
+                    <img src="${product.image_path || '/images/pic1.svg'}" 
+                    style="width:60px; height:60px; object-fit:cover; border-radius:6px; cursor:pointer;">
+                </td>
+                <td>${product.name}</td>
+                <td>${product.description}</td>
+                <td>${product.product_code}</td>
+                <td>${product.category_name}</td>
+                <td>RM${product.price}</td>
+                <td>${product.quantity}</td>
+                <td class="manage__actions">
+                    <button class="action__btn action__btn--edit" data-id="${product.id}">Edit</button>
+                    <button class="action__btn action__btn--delete" data-id="${product.id}">Delete</button>
+                </td>
+            </tr>
+        `;
+        productTableBody.insertAdjacentHTML("beforeend", rowHTML);
+    });
+}
 
 // Load and display the table
 async function loadProductTable() {
     try {
         const res = await fetch("/api/products");
         const products = await res.json();
+
+        allProducts = products; // save all products for searching
+        renderProductTable(products); // call the rendering function
 
         productTableBody.innerHTML = "";
 
@@ -18,7 +79,13 @@ async function loadProductTable() {
                 <tr>
                     <td>${product.id}</td>
                     <td>
-                        <img src="${product.image_path || '/images/pic1.svg'}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;">
+                        <img src="${product.image_path || '/images/pic1.svg'}" 
+                        style="
+                            width:60px; 
+                            height:60px; 
+                            object-fit:cover; 
+                            border-radius:6px; 
+                            cursor:pointer;">
                     </td>
                     <td>${product.name}</td>
                     <td>${product.description}</td>
@@ -62,6 +129,19 @@ async function loadCategoryOptions(selectedId = null) {
 }
 
 document.addEventListener("DOMContentLoaded", loadProductTable);
+
+// search functionality
+document.getElementById("productSearch").addEventListener("input", (e) => {
+    const keyword = e.target.value.toLowerCase();
+
+    const filtered = allProducts.filter(product => {
+        return (
+            product.name.toLowerCase().includes(keyword)
+        );
+    });
+
+    renderProductTable(filtered);
+});
 
 //open Add modal
 document.getElementById("addProductBtn").addEventListener("click", () => {
@@ -127,6 +207,13 @@ productForm.addEventListener("submit", async (e) => {
 //  Edit / Delete btn (Event Delegation)
 productTableBody.addEventListener("click", async (e) => {
 
+    // click image to open lightbox
+    if (e.target.tagName === "IMG") {
+        lightboxImg.src = e.target.src;
+        imageLightbox.classList.add("active");
+        return;
+    }
+
     // click edit btn
     if (e.target.classList.contains("action__btn--edit")) {
         const id = e.target.dataset.id;
@@ -174,21 +261,5 @@ productTableBody.addEventListener("click", async (e) => {
         if (res.ok) {
             loadProductTable();
         }
-    }
-
-
-    // Exist checking
-    const productImageInput = document.getElementById("productImage");
-
-    if (productImageInput) {
-        productImageInput.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            const preview = document.getElementById("imagePreview");
-
-            if (file) {
-                preview.src = URL.createObjectURL(file);
-                preview.style.display = "block";
-            }
-        });
     }
 });

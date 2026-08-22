@@ -1,36 +1,57 @@
 const categoryOverlay = document.getElementById("categoryOverlay");
+const categoryClose = document.getElementById("categoryClose");
 const categoryForm = document.getElementById("categoryForm");
 const categoryTableBody = document.getElementById("categoryTableBody");
-const categoryMoadlTitle = document.getElementById("categoryModalTitle");
+const categoryModalTitle = document.getElementById("categoryModalTitle");
 const categorySubmitBtn = document.getElementById("categorySubmitBtn");
-const categoryTable = document.getElementById("categoryTable");
 
-async function loadCaregoryTable() {
+let allCategories = []; // to store all categories for searching
+
+function renderCategoryTable(categories) {
+    categoryTableBody.innerHTML = "";
+    categories.forEach(category => {
+        const rowHTML = `
+            <tr>
+                <td>${category.id}</td>
+                <td>${category.name}</td>
+                <td class="manage__actions">
+                    <button class="action__btn action__btn--edit" data-id="${category.id}" data-name="${category.name}">Edit</button>
+                    <button class="action__btn action__btn--delete" data-id="${category.id}">Delete</button>
+                </td>
+            </tr>
+        `;
+        categoryTableBody.insertAdjacentHTML("beforeend", rowHTML);
+    });
+}
+
+async function loadCategoryTable() {
     try {
         const res = await fetch("/api/categories");
         const categories = await res.json();
 
-        categoryTableBody.innerHTML = "";
+        allCategories = categories; // save all categories for searching
+        renderCategoryTable(categories); // call the rendering function
 
-        categories.forEach(category => {
-            const rowHTML = `
-                <tr class="categoryTableRow">
-                    <td>${category.id}</td>
-                    <td>${category.name}</td>
-                    <td class="manage__actions">
-                        <button class="action__btn action__btn--edit" data-id="${category.id}" data-name="${category.name}">Edit</button>
-                        <button class="action__btn action__btn--delete" data-id="${category.id}">Delete</button>
-                    </td>
-                </tr>
-            `;
-            categoryTableBody.innerHTML += rowHTML;
-        })
     } catch (err) {
-        consoile.error(err);
+        console.error(err);
     }
 }
 
-document.addEventListener("DOMContentLoaded", loadCaregoryTable);
+document.addEventListener("DOMContentLoaded", loadCategoryTable);
+
+// 新增：搜寻功能
+document.getElementById("categorySearch").addEventListener("input", (e) => {
+    const keyword = e.target.value.toLowerCase();
+
+    const filtered = allCategories.filter(category => {
+        return (
+            category.name.toLowerCase().includes(keyword) ||
+            category.id.toString().includes(keyword)
+        );
+    });
+
+    renderCategoryTable(filtered);
+});
 
 // open modal for adding category
 document.getElementById("addCategoryBtn").addEventListener("click", () => {

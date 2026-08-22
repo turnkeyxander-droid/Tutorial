@@ -85,6 +85,10 @@
     min-height: 80vh;
     padding: 60px;
     background: #0b0d11;
+        /* display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center; */
 }
 
 .manage__header {
@@ -116,7 +120,6 @@
     filter: brightness(1.1);
 }
 
-/* 表格外层：装表头 + 捲动容器 */
 .manage__table--container {
     max-width: 1200px;
     margin: 0 auto;
@@ -126,13 +129,12 @@
     overflow: hidden;
 }
 
-/* 表头：固定在最上面，不放进捲动容器里 */
 .manage__table--header {
     display: grid;
-    grid-template-columns: 60px 70px 1fr 1.5fr 110px 100px 100px 90px 160px;
+    grid-template-columns: 60px 70px 1fr 0.8fr 110px 100px 100px 90px 160px;
     background: var(--login-card-bg);
     border-bottom: 1px solid var(--login-border);
-    padding: 14px 18px;
+    padding: 20px 18px;
 }
 
 .header__cell {
@@ -143,7 +145,6 @@
     text-align: center;
 }
 
-/* 只有这层会捲动 */
 .manage__table--wrapper {
     max-height: 640px;
     overflow: auto;
@@ -161,9 +162,9 @@
 
 .manage__table tr {
     display: grid;
-    grid-template-columns: 60px 70px 1fr 1.5fr 110px 100px 100px 90px 160px;
+    grid-template-columns: 60px 70px 1fr 0.8fr 110px 100px 100px 90px 160px;
     align-items: center;
-    padding: 0 18px;
+    padding: 0 10px 0 16px;
 }
 
 .manage__table td {
@@ -253,4 +254,95 @@
     .products__grid {
         grid-template-columns: 1fr;
     }
+}
+
+.manage__table td img {
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.manage__table td img:hover {
+    opacity: 0.8;
+}
+
+.lightbox__overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    align-items: center;
+    justify-content: center;
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.lightbox__overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.lightbox__img {
+    max-width: 90vw;
+    max-height: 85vh;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox__close {
+    position: fixed;
+    top: 24px;
+    right: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 28px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+}
+
+.lightbox__close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.search__wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 320px;
+    margin: 0 20px;
+}
+
+.search__icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--login-text-muted);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.search__input {
+    width: 100%;
+    background: var(--login-input-bg);
+    border: 1px solid var(--login-border);
+    border-radius: 8px;
+    padding: 10px 14px 10px 38px;
+    color: var(--login-text);
+    font-size: 14px;
+}
+
+.search__input:focus {
+    outline: none;
+    border-color: var(--login-accent);
+}
+
+.search__input::placeholder {
+    color: var(--login-text-muted);
 }

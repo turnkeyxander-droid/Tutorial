@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders - NEXT</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/orders.css">
+    <link rel="stylesheet" href="/css/productToggle.css">
+    <script src="https://kit.fontawesome.com/1353181530.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <div class="products__manage">
+        <div class="manage__header">
+            <h2 class="section__title">Manage Orders</h2>
+            <div class="search__wrapper">
+                <i class="fa-solid fa-magnifying-glass search__icon"></i>
+                <input type="text" id="orderSearch" class="search__input" placeholder="Search by order ID, username, or email...">
+            </div>
+        </div>
+
+        <div class="manage__table--container">
+            <div class="manage__table--header" style="grid-template-columns: 70px 1fr 1fr 120px 100px 140px 130px;">
+                <div class="header__cell">Order ID</div>
+                <div class="header__cell">Customer</div>
+                <div class="header__cell">Email</div>
+                <div class="header__cell">Total</div>
+                <div class="header__cell">Date</div>
+                <div class="header__cell">Status</div>
+                <div class="header__cell">Action</div>
+            </div>
+
+            <div class="manage__table--wrapper">
+                <table class="manage__table">
+                    <tbody id="orderTableBody" style="--cols: 70px 1fr 1fr 120px 100px 140px 130px;">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+
+    <script src="/js/admin-guard.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/page-transition.js"></script>
+    <script src="/js/manage-orders.js"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+.orders__container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    min-height: 70vh;
+}
+
+.orders__container .section__title {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.orders__list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.order__card {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 20px;
+    background: var(--login-card-bg);
+    border: 1px solid var(--login-border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+}
+
+.order__card:hover {
+    border-color: var(--login-accent);
+}
+
+.order__card--info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.order__card--id {
+    color: var(--login-text);
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.order__card--date {
+    color: var(--login-text-muted);
+    font-size: 12px;
+}
+
+.order__card--status {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status--pending { background: rgba(255, 193, 7, 0.15); color: #ffc107; }
+.status--paid { background: rgba(79, 140, 255, 0.15); color: var(--login-accent); }
+.status--shipped { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+.status--completed { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+.status--cancelled { background: rgba(230, 85, 95, 0.15); color: #e6555f; }
+
+.order__card--total {
+    color: var(--login-accent);
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.orders__empty {
+    color: var(--login-text-muted);
+    text-align: center;
+    padding: 60px 0;
+}
+
+.back__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--login-text-muted);
+    font-size: 14px;
+    text-decoration: none;
+    margin-bottom: 20px;
+}
+
+.back__btn:hover {
+    color: var(--login-accent);
+}
+
+.order__tracker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px 0;
+    padding: 20px;
+}
+
+.tracker__step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.tracker__step--circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--login-input-bg);
+    border: 2px solid var(--login-border);
+    color: var(--login-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.tracker__step.completed .tracker__step--circle {
+    background: var(--login-accent);
+    border-color: var(--login-accent);
+    color: white;
+}
+
+.tracker__step--label {
+    color: var(--login-text-muted);
+    font-size: 11px;
+    text-transform: capitalize;
+}
+
+.tracker__step.completed .tracker__step--label {
+    color: var(--login-text);
+}
+
+.tracker__line {
+    width: 60px;
+    height: 2px;
+    background: var(--login-border);
+    margin: 0 4px;
+    margin-bottom: 20px;
+    transition: background 0.2s ease;
+}
+
+.tracker__line.completed {
+    background: var(--login-accent);
+}
+
+.order__cancelled {
+    color: #e6555f;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* 订单明细卡片 */
+.order__detail--card {
+    background: var(--login-card-bg);
+    border: 1px solid var(--login-border);
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.order__detail--header {
+    display: flex;
+    justify-content: space-between;
+    color: var(--login-text-muted);
+    font-size: 13px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--login-border);
+    margin-bottom: 16px;
+}
+
+.order__item--row {
+    display: flex;
+    justify-content: space-between;
+    color: var(--login-text);
+    font-size: 14px;
+    padding: 8px 0;
+}
+
+.order__detail--total {
+    display: flex;
+    justify-content: space-between;
+    color: var(--login-text);
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--login-border);
+}
+
+.manage__table tbody {
+    --cols: 60px 70px 1fr 1.5fr 110px 100px 100px 90px 160px; /* 默认给Products用 */
+}
+
+.manage__table tr {
+    display: grid;
+    grid-template-columns: var(--cols);
+    align-items: center;
+    padding: 0 18px;
+}

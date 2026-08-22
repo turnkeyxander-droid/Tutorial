@@ -10,8 +10,11 @@ async function loadCart() {
         if (items.length === 0) {
             cartItemsDiv.innerHTML = `<p class="cart__empty">Your cart is empty</p>`;
             document.getElementById("cartTotal").textContent = "RM0.00";
+            checkoutBtn.classList.add("disabled"); // cart is empty, disable the button
             return;
         }
+
+        checkoutBtn.classList.remove("disabled"); // cart not empty, enable the button
 
         let total = 0;
 
@@ -58,3 +61,4 @@ document.getElementById("cartItems").addEventListener("click", async (e) => {
         }
     }
 });
+
